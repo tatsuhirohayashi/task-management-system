@@ -5,7 +5,7 @@
  * DELETE /api/tasks/:id - タスク削除
  */
 
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import {
   deleteTaskCommand,
   updateTaskCommand,
@@ -18,7 +18,7 @@ import { getTaskByIdQuery } from "../../../../external/handler/task.query.server
  * タスク詳細を取得
  */
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {

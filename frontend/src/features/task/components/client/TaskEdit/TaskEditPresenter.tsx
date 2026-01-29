@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import type React from "react";
 import { Button } from "@/shared/components/ui/button";
 import { RequiredBadge } from "@/shared/components/common/RequiredBadge";
 import type { UseFormRegister, Control, FieldErrors } from "react-hook-form";
@@ -13,7 +13,7 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-  DragEndEvent,
+  type DragEndEvent,
 } from "@dnd-kit/core";
 import {
   SortableContext,

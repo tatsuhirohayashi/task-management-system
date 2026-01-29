@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { Button } from "@/shared/components/ui/button";
 import type { TaskResponse } from "@/external/dto/task.dto";
 import { BasicModal } from "@/shared/components/dialog/BasicModal";

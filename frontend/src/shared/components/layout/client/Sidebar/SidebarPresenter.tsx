@@ -26,6 +26,7 @@ export function SidebarPresenter({ onNavigate }: SidebarPresenterProps) {
       <div className="p-4 space-y-2">
         {SIDEBAR_MENU_ITEMS.map((item) => (
           <button
+            type="button"
             key={item.path}
             onClick={() => onNavigate(item.path)}
             className="w-full text-left px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 rounded"

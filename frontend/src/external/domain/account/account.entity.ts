@@ -3,7 +3,7 @@
  * ドメイン設計書に基づくAccountエンティティ
  */
 
-import { Email } from '../shared/value-objects';
+import type { Email } from '../shared/value-objects';
 
 /**
  * Accountエンティティ

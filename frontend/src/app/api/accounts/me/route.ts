@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { getCurrentAccountQuery } from "../../../../external/handler/account.query.server";
 
 /**

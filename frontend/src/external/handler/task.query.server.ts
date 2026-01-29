@@ -78,7 +78,7 @@ export async function listTaskQuery(
  */
 export async function getTaskByIdQuery(
   request: GetTaskByIdRequest,
-  accountId?: string, // eslint-disable-line @typescript-eslint/no-unused-vars
+  _accountId?: string, // eslint-disable-line @typescript-eslint/no-unused-vars
 ): Promise<TaskResponse | null> {
   // バリデーション
   const parseResult = GetTaskByIdRequestSchema.safeParse(request);

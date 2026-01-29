@@ -123,7 +123,7 @@ export const CreateTaskRequestSchema = z.object({
   date: z.string().min(1, { message: "dateは1文字以上である必要があります" }).refine(
     (val) => {
       const date = new Date(val);
-      return !isNaN(date.getTime());
+      return !Number.isNaN(date.getTime());
     },
     { message: "dateは有効な日付形式である必要があります" },
   ),
@@ -172,7 +172,7 @@ export const UpdateTaskRequestSchema = z.object({
   date: z.string().min(1, { message: "dateは1文字以上である必要があります" }).refine(
     (val) => {
       const date = new Date(val);
-      return !isNaN(date.getTime());
+      return !Number.isNaN(date.getTime());
     },
     { message: "dateは有効な日付形式である必要があります" },
   ),

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { getAccountByIdQuery } from "../../../../external/handler/account.query.server";
 
 /**
@@ -6,7 +6,7 @@ import { getAccountByIdQuery } from "../../../../external/handler/account.query.
  * GET /api/accounts/:id - アカウント詳細取得
  */
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {

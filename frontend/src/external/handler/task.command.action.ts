@@ -2,7 +2,7 @@
 
 import { withAuth } from "@/features/auth/servers/auth.guard";
 import { createTaskCommand, deleteTaskCommand, updateTaskCommand, updateTaskReviewCommand, updateTaskItemCommand } from "./task.command.server";
-import { CreateTaskRequest, UpdateTaskRequest, UpdateTaskReviewRequest, UpdateTaskItemOutputRequest } from "../dto/task.dto";
+import type { CreateTaskRequest, UpdateTaskRequest, UpdateTaskReviewRequest, UpdateTaskItemOutputRequest } from "../dto/task.dto";
 
 export async function createTaskCommandAction(request: CreateTaskRequest) {
   return withAuth(({ accountId }) => createTaskCommand(accountId, request));

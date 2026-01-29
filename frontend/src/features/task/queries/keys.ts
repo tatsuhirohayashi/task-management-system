@@ -1,4 +1,4 @@
-import { TaskFilters } from "@/external/dto/task.dto";
+import type { TaskFilters } from "@/external/dto/task.dto";
 
 export const taskKeys = {
   all: ["notes"] as const,

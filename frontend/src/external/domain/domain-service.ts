@@ -4,9 +4,9 @@
  * 複数の集約にまたがるビジネスロジックを扱う
  */
 
-import { Account } from './account/account.entity';
-import { Task } from './task/task.entity';
-import { TaskItem } from './task/task-item.entity';
+import type { Account } from './account/account.entity';
+import type { Task } from './task/task.entity';
+import type { TaskItem } from './task/task-item.entity';
 
 /**
  * 子タスクの優先度を変更していいかを判定する

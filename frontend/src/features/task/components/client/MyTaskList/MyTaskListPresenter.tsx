@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { Button } from "@/shared/components/ui/button";
 import type { TaskResponse } from "@/external/dto/task.dto";
 
@@ -68,6 +67,7 @@ export function MyTaskListPresenter({
       {/* 日付ナビゲーション */}
       <div className="flex items-center justify-center gap-4">
         <button
+          type="button"
           onClick={onPreviousMonth}
           className="text-gray-600 hover:text-gray-900 text-2xl font-semibold px-2 py-1 rounded hover:bg-gray-100 transition-colors"
         >
@@ -75,6 +75,7 @@ export function MyTaskListPresenter({
         </button>
         <div className="text-3xl font-semibold">{currentYearMonth}</div>
         <button
+          type="button"
           onClick={onNextMonth}
           className="text-gray-600 hover:text-gray-900 text-2xl font-semibold px-2 py-1 rounded hover:bg-gray-100 transition-colors"
         >

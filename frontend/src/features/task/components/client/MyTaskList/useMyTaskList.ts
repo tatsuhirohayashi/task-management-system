@@ -82,7 +82,7 @@ export function useMyTaskList(initialFilters: TaskFilters) {
   const currentYearMonth = useMemo(() => {
     if (!yearMonth) return "";
     const [year, month] = yearMonth.split("-");
-    return `${year}年${parseInt(month)}月`;
+    return `${year}年${parseInt(month, 10)}月`;
   }, [yearMonth]);
 
   // 前月に遷移

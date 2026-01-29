@@ -3,7 +3,7 @@
  * ドメイン設計書に基づくTaskエンティティ（集約ルート）
  */
 
-import { TaskItem } from './task-item.entity';
+import type { TaskItem } from './task-item.entity';
 
 /**
  * Taskエンティティ（集約ルート）

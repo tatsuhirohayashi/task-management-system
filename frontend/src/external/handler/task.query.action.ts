@@ -1,7 +1,7 @@
 "use server";
 
 import { withAuth } from "@/features/auth/servers/auth.guard";
-import { GetTaskByIdRequest, TaskFilters } from "../dto/task.dto";
+import type { GetTaskByIdRequest, TaskFilters } from "../dto/task.dto";
 import { getTaskByIdQuery, listTaskQuery } from "./task.query.server";
 
 export async function listTaskQueryAction(filters: TaskFilters) {

@@ -31,7 +31,7 @@ export const TaskEditFormSchema = z.object({
   date: z.string().min(1, { message: "日付を選択してください" }).refine(
     (val) => {
       const date = new Date(val);
-      return !isNaN(date.getTime());
+      return !Number.isNaN(date.getTime());
     },
     { message: "有効な日付を選択してください" },
   ),

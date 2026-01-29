@@ -39,7 +39,7 @@ export class TaskRepository implements ITaskRepository {
     if (condition.yearMonth) {
       const [year, month] = condition.yearMonth.split("-");
       const startDate = `${year}-${month}-01`;
-      const endDate = new Date(parseInt(year), parseInt(month), 0)
+      const endDate = new Date(parseInt(year, 10), parseInt(month, 10), 0)
         .toISOString()
         .split("T")[0];
       conditions.push(
@@ -71,7 +71,7 @@ export class TaskRepository implements ITaskRepository {
       .where(conditions.length > 0 ? and(...conditions) : undefined);
 
     // 並び替え
-    let results;
+    let results: Awaited<ReturnType<typeof baseQuery>>;
     if (condition.sort) {
       switch (condition.sort) {
         case "newest":
@@ -112,7 +112,7 @@ export class TaskRepository implements ITaskRepository {
       if (!taskItemsMap.has(item.taskId)) {
         taskItemsMap.set(item.taskId, []);
       }
-      taskItemsMap.get(item.taskId)!.push(item);
+      taskItemsMap.get(item.taskId)?.push(item);
     }
 
     // ドメインエンティティに変換

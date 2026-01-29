@@ -3,7 +3,7 @@
  * ドメイン設計書に基づくTaskItemエンティティ
  */
 
-import { Priority, Density, DurationTime, Status } from '../shared/value-objects';
+import { type Priority, type Density, type DurationTime, Status } from '../shared/value-objects';
 
 /**
  * TaskItemエンティティ
