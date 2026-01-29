@@ -1,0 +1,2 @@
+export { BasicModal } from "./BasicModal";
+

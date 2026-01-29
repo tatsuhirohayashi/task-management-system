@@ -1,0 +1,2 @@
+export { TaskEditPageTemplate } from "./TaskEditPageTemplate";
+

@@ -1,0 +1,2 @@
+export { TaskNewPageTemplate } from "./TaskNewPageTemplate";
+
