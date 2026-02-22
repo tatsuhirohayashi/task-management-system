@@ -4,8 +4,10 @@ import "@typespec/openapi3";
 import "./models/common.tsp";
 import "./models/account.tsp";
 import "./models/task.tsp";
+import "./models/category.tsp";
 import "./routes/accounts.tsp";
 import "./routes/tasks.tsp";
+import "./routes/categories.tsp";
 
 using TypeSpec.Http;
 using TypeSpec.Rest;

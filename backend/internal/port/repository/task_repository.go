@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"task-management-system/backend/internal/domain/account"
+	"task-management-system/backend/internal/domain/category"
 	"task-management-system/backend/internal/domain/task"
 )
 
@@ -25,4 +26,13 @@ type AccountRepository interface {
 	GetAccountByID(ctx context.Context, accountID string) (*account.Account, error)
 	GetAccountByEmail(ctx context.Context, email string) (*account.Account, error)
 	CreateAccount(ctx context.Context, email string, firstName string, lastName string, provider string, providerAccountID string, thumbnail *string) (*account.Account, error)
+}
+
+// CategoryRepository カテゴリーリポジトリインターフェース
+type CategoryRepository interface {
+	ListByOwnerID(ctx context.Context, ownerID string) ([]*category.Category, error)
+	GetByID(ctx context.Context, categoryID string) (*category.Category, error)
+	Create(ctx context.Context, ownerID string, name string) (*category.Category, error)
+	Update(ctx context.Context, categoryID string, name string) (*category.Category, error)
+	Delete(ctx context.Context, categoryID string) error
 }
