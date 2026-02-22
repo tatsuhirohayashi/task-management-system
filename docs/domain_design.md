@@ -1,4 +1,4 @@
-# ドメイン設計（タスク管理アプリ）
+# ドメイン設計（タスク管理アプリ）セカンドリリース2月16日
 
 # ドメイン設計書
 
@@ -8,7 +8,8 @@
 | --- | --- | --- |
 | Account | ログインしているユーザー。タスクの作成者 | id、email、firstName、lastName、isActive、provider、providerAccountId、thumnail、lastLoginAt、createdAt、updatedAt |
 | Task | 1日のタスク。 | id、ownerId、title、date、review、taskItems[]、createdAt、updatedAt |
-| TaskItem | Taskの内の1つのタスク | id、taskId、priority、density、durationTime、content、output、status、isRequired、order、createdAt、updatedAt |
+| TaskItem | Taskの内の1つのタスク | id、taskId、taskCategoryId、priority、density、durationTime、content、output、status、isRequired、order、createdAt、updatedAt |
+| Category | カテゴリー | id、ownerId、name、createdAt、updatedAt |
 | Priority | 子タスクの優先度（高、中、低） | high、medium、low |
 | Density | 子タスクの密度（高、中、低） | high、medium、low |
 | DurationTime | 子タスクの継続時間（15、30、45、60）分 | 15、30、45、60 |
@@ -20,8 +21,8 @@
 | --- | --- | --- | --- | --- |
 | Email | Account.email | 「@」が必ずある/空NG/前後の空白トリム | user@example.com | みんなで同じルール、間違うと困るのでVOにする |
 | Priority | Task.priority | HighまたはMediumまたはLowだけOK | High/Medium/Low | アプリの意味が強い（高、中、低）のでVOにする |
-| Density | Task.density | HighまたはMediumまたはLowだけOK | High/Medium/Low | アプリの意味が強い（高、中、低）なのでVOにする |
-| DurationTime | Task.time | 60または45または30または15だけOK | 60/45/30/15 | アプリの意味が強い（60、45、30、15）なのでVOにする |
+| Density | Task.density | HighまたはMediumまたはLowだけOK | High/Medium/Low | アプリの意味が強い（高、中、低）のでVOにする |
+| DurationTime | Task.time | 60または45または30または15だけOK | 60/45/30/15 | アプリの意味が強い（60、45、30、15）のでVOにする |
 | Status | Task.status | NotStartedまたはInProgressまたはCompleted | NotStarted/InProgress/Completed | アプリの意味が強い（未着手、進行中、完了）なのでVOにする |
 
 ## 集約
@@ -32,13 +33,14 @@
 Priority（優先度の状態）
 Density（密度の状態）
 DurationTime（継続時間の状態） | Accountに属する（Owner） | タスクを作るチーム。Taskがリーダーで、TaskItemは中身 |
+| Categoryチーム | Category |  | TaskのTaskitemを所有する | カテゴリーを作るチーム。 |
 | Accountチーム | Account | Email（VO）
 プロバイダー情報（provider、providerAccountId） | Taskを所有する | OAuthでログインしたユーザーを表すチーム。他チームの親（所有者） |
 | 共通VO（どのチームにも属さない小さな部品） | なし（単独） | Email、Priority、Density、DurationTime、Status | 各チームで使われる共通ルール |  |
 
 ## 関係図
 
-[Account]-owns→[Task]-contains→[TaskItem]
+[Account]-owns→[Task]-contains→[TaskItem]←contains-[Category]
 
 ## ドメインロジック
 
@@ -65,6 +67,12 @@ DurationTime（継続時間の状態） | Accountに属する（Owner） | タ�
 | アカウントは自分のノートとテンプレートを持つ | 自分のものだけを見たり直したりできるように関係を持っている |
 | ログイン時にプロフィール情報と最終ログイン時刻を更新 | OAuthログイン時に最新のプロフィール情報で更新する |
 
+### Categoryチーム（カテゴリーの世界）
+
+| ルール | 何をしてる？ |
+| --- | --- |
+| カテゴリーの編集、削除はオーナーだけ | 誰が変えられるかをカテゴリーの中で判断する。「自分のカテゴリーだけOK」 |
+
 ### 共通ルール（どのチームでも同じ）
 
 | ルール | 何をしてる？ |
@@ -80,6 +88,8 @@ DurationTime（継続時間の状態） | Accountに属する（Owner） | タ�
 | canChangeDensity | 子タスクの密度を変更していいかを判定する。オーナーならOK、他人ならNGという条件をチェックする係 | Account + Task |
 | canChangeDurationTime | 子タスクの継続時間を変更していいかを判定する。オーナーならOK、他人ならNGという条件をチェックする係 | Account + Task |
 | canChangeStatus | 子タスクのステータスを変更していいかを判定する。オーナーならOK、他人ならNGという条件をチェックする係 | Account + Task |
+| canDeleteCategory | カテゴリーが削除可能かを判定する。カテゴリーが子タスクで使用されていないならOK、１個でも使用されたらNGという条件をチェックする係 | Category + Task |
+| canChangeCategory | カテゴリーを編集できるかを判定する。オーナーならOK、他人ならNGという条件をチェックする係 | Category + Account |
 
 ### 集約境界とトランザクション境界
 
@@ -89,21 +99,22 @@ DurationTime（継続時間の状態） | Accountに属する（Owner） | タ�
 
 | 集約 | トランザクション対象 | 理由 |
 | --- | --- | --- |
-| Task | task + taskitems | タスクと各子タスクは一体で管理。片方だけ更新されると不具合が発生 |
+| Task | task + taskitems + taskcategory | タスクと各子タスクとタスクカテゴリー（中間テーブル）は一体で管理。片方（タスクまたは子タスク）だけ更新されると不具合が発生 |
 | Account | accountのみ | 単一エンティティで完結。他のエンティティとの同時更新は不要 |
+| Category | categoryのみ | 単一エンティティで完結。他のエンティティとの同時更新は不要 |
 
 ### トランザクションが必要な操作
 
 以下の操作ではトランザクションが必要です。
 
 1. **集約の作成**
-- Task作成：task + taskItemsを同時作成
+- Task作成：task + taskItems + taskCategoryを同時作成
 
-1. **集約の更新**
-- Task更新：存在確認+task+taskItemsの更新
+2. **集約の更新**
+- Task更新：存在確認+task+taskItems+taskCategoryの更新
 
-1. **集約の削除**
-- Task削除：存在確認+task+taskItemsの削除
+3. **集約の削除**
+- Task削除：存在確認+task+taskItems+taskCategoryの削除
 
 ### トランザクション不要な操作
 
@@ -111,8 +122,8 @@ DurationTime（継続時間の状態） | Accountに属する（Owner） | タ�
 
 1. **読み取り専用のクエリ**
 - Task一覧取得
+- Category一覧取得
 - Account取得
 
-1. **単一エンティティの操作**
+2. **単一エンティティの操作**
 - Accountのプロフィール更新（単一テーブルの更新）
-

@@ -1,4 +1,4 @@
-# API設計（タスク管理アプリ）
+# API設計（タスク管理アプリセカンドリリース２月１６日〜）
 
 ## API構成
 
@@ -30,7 +30,7 @@
 
 **Request（Query Parameters）:**
 
-```jsx
+```
 TaskFilters {
   year-month: string //年月
   ownerId?: string //所有者IDでフィルタ（自分のタスクのみ取得する場合に使用）
@@ -41,7 +41,7 @@ TaskFilters {
 
 **Response:**
 
-```jsx
+```
 TaskResponse {
   id: string
   ownerId: string
@@ -65,6 +65,10 @@ TaskResponse {
     isRequired: boolean
     order: number
     status: "Not Started" | "InProgress" | "Completed"
+    category: {
+      id: string
+      name: string
+    }
   }]
   plannedTaskCount: number
   plannedTaskDurationMinutes: number
@@ -99,13 +103,13 @@ ListTaskResponse = TaskResponse[]
 
 **Request（URL Parameters）:**
 
-```jsx
+```
 id: string //タスクID
 ```
 
 **Response:**
 
-```jsx
+```
 GetTaskByIdResponse = TaskResponse | null; // 見つからない場合はnull
 ```
 
@@ -113,6 +117,64 @@ GetTaskByIdResponse = TaskResponse | null; // 見つからない場合はnull
 
 - 認証必須
 - 存在しないIDの場合はnullを返す
+
+## 月間累計タスクデータ取得
+
+**URL: GET /api/total-tasks-monthly-data**
+
+**Request（Query Parameters）:**
+
+```
+TotalTasksMonthlyDataFilters {
+  year-month: string //年月
+}
+```
+
+**Response:**
+
+```
+TotalTasksMonthlyDataResponse {
+  ownerId: string
+  owner: {
+    id: string
+    firstName: string
+    lastName: string
+    thumnail: string?
+  }
+  totalMonthlyWorkHours: number
+  plannedMonthlyWorkHours: number
+  totalMonthlyTasks: number
+  plannedMonthlyTasks: number
+  monthlyCompletionRate: number
+  totalMonthlyHighLoadTaskHours: number
+  totalMonthlyMediumLoadTaskHours: number
+  totalMonthlyLowLoadTaskHours: number
+  monthlyRatioOfHighLoadTasks: number
+  monthlyRatioOfMediumLoadTasks: number
+  monthlyRatioOfLowLoadTasks: number
+  categorys: [{
+    id: string
+    totalMonthlyTaskHoursByCategory: number
+    monthlyTaskRatioByCategory: number
+  }]
+  totalDailyTasks: [{
+    id: string
+    date: string
+    totalDailyWorkHours: number
+    totalDailyHighLoadTaskHours: number
+    totalDailyMediumLoadTaskHours: number
+    totalDailyLowLoadTaskHours: number
+  }]
+  createdAt: string //ISO 8601形式
+  updatedAt: string //ISO 8601形式
+}
+```
+
+### ビジネスルール：
+
+- 認証必須
+- ownerIdを指定した場合、そのユーザーが所有するタスクのみを取得
+- 自分のタスクのみを取得する場合：GET /api/total-tasks-monthly-data?ownerId={自分のID}
 
 ---
 
@@ -124,7 +186,7 @@ GetTaskByIdResponse = TaskResponse | null; // 見つからない場合はnull
 
 **Request:**
 
-```jsx
+```
 CreateTaskRequest {
   title: string
   date: string
@@ -136,6 +198,10 @@ CreateTaskRequest {
     isRequired: boolean
     order: number
     status: "Not Started" | "InProgress" | "Completed"
+    category: {
+      id: string
+      name: string
+    }
   }]
   createdAt: string
   updatedAt: string
@@ -144,7 +210,7 @@ CreateTaskRequest {
 
 **Response:**
 
-```jsx
+```
 CreateTaskResponse = TaskResponse;
 ```
 
@@ -160,7 +226,7 @@ CreateTaskResponse = TaskResponse;
 
 **Request:**
 
-```jsx
+```
 UpdateTaskRequest {
   id: string // タスクID
   title: string
@@ -174,6 +240,10 @@ UpdateTaskRequest {
     isRequired: boolean
     order: number
     status: "Not Started" | "InProgress" | "Completed"
+    category: {
+      id: string
+      name: string
+    }
   }]
   createdAt: string
   updatedAt: string
@@ -182,7 +252,7 @@ UpdateTaskRequest {
 
 **Response:**
 
-```jsx
+```
 UpdateTaskResponse = TaskResponse;
 ```
 
@@ -197,7 +267,7 @@ UpdateTaskResponse = TaskResponse;
 
 **Request:**
 
-```jsx
+```
 DeleteTaskRequest {
   id: string // タスクID
 }
@@ -205,7 +275,7 @@ DeleteTaskRequest {
 
 **Response:**
 
-```jsx
+```
 DeleteTaskResponse { success: boolean }
 ```
 
@@ -221,7 +291,7 @@ DeleteTaskResponse { success: boolean }
 
 **Request:**
 
-```jsx
+```
 TaskItemRequest {
   id: string // 子タスクID
   output: string //子タスクのアウトプット
@@ -230,7 +300,7 @@ TaskItemRequest {
 
 **Response:**
 
-```jsx
+```
 TaskItemTaskResponse = TaskResponse;
 ```
 
@@ -246,7 +316,7 @@ TaskItemTaskResponse = TaskResponse;
 
 **Request:**
 
-```jsx
+```
 ReviewItemRequest {
   id: string // タスクID
   review: string //タスクの振り返り
@@ -255,7 +325,7 @@ ReviewItemRequest {
 
 **Response:**
 
-```jsx
+```
 ReviewTaskResponse = TaskResponse;
 ```
 
@@ -264,38 +334,248 @@ ReviewTaskResponse = TaskResponse;
 - 認証必須
 - 自分が所有するタスクのみ振り返りの更新可能
 
+## **子タスク密度更新**
+
+**URL: PUT /api/taskitems/:id/density**
+
+**Request:**
+
+```
+TaskItemsDensityRequest {
+  id: string // 子タスクID
+  density: "High" | "Medium" | "Low" //子タスクの密度
+}
+```
+
+**Response:**
+
+```
+DensityTaskResponse = TaskResponse;
+```
+
+### ビジネスルール：
+
+- 認証必須
+- 自分が所有する子タスクのみ密度の更新可能
+
+## **子タスク継続時間更新**
+
+**URL: PUT /api/taskitems/:id/durationtime**
+
+**Request:**
+
+```
+TaskItemsDurationTimeRequest {
+  id: string // 子タスクID
+  durationTime: 60 | 45 | 30 | 15 //子タスクの継続時間
+}
+```
+
+**Response:**
+
+```
+DurationTimeTaskResponse = TaskResponse;
+```
+
+### ビジネスルール：
+
+- 認証必須
+- 自分が所有する子タスクのみ継続時間の更新可能
+
+## **子タスク優先度更新**
+
+**URL: PUT /api/taskitems/:id/priority**
+
+**Request:**
+
+```
+TaskItemsPriorityRequest {
+  id: string // 子タスクID
+  priority: "High" | "Medium" | "Low" //子タスクの優先度
+}
+```
+
+**Response:**
+
+```
+PriorityTaskResponse = TaskResponse;
+```
+
+### ビジネスルール：
+
+- 認証必須
+- 自分が所有する子タスクのみ優先度の更新可能
+
+## **子タスクカテゴリー更新**
+
+**URL: PUT /api/taskitems/:id/category**
+
+**Request:**
+
+```
+TaskItemsCategoryRequest {
+  id: string // 子タスクID
+  category: {
+    id: string
+    name: string
+  }
+}
+```
+
+**Response:**
+
+```
+CategoryTaskResponse = TaskResponse;
+```
+
+### ビジネスルール：
+
+- 認証必須
+- 自分が所有する子タスクのみカテゴリーの更新可能
+
+---
+
+# Categorys（カテゴリー）API
+
+## Query Operations
+
+## カテゴリー一覧取得
+
+**URL: GET /api/categorys**
+
+**Request（Query Parameters）:**
+
+```
+CategoryRequest {}
+```
+
+**Response:**
+
+```
+CategoryResponse {
+  id: string
+  ownerId: string
+  name: string
+  createdAt: string //ISO 8601形式
+  updatedAt: string //ISO 8601形式
+}
+
+ListCategoryResponse = CategoryResponse[]
+```
+
+### ビジネスルール：
+
+- 認証必須
+
+## Command Operations
+
+## カテゴリー作成
+
+**URL: POST /api/categorys**
+
+**Request:**
+
+```
+CreateCategoryRequest {
+  name: string
+  createdAt: string
+  updatedAt: string
+}
+```
+
+**Response:**
+
+```
+CreateCategoryResponse = CategoryResponse;
+```
+
+### ビジネスルール：
+
+- 認証必須
+- カテゴリー名の重複はNG
+
+## カテゴリー更新
+
+**URL: PUT /api/categorys/:id**
+
+**Request:**
+
+```
+UpdateCategoryRequest {
+  id: string // カテゴリーID
+  name: string
+  createdAt: string
+  updatedAt: string
+}
+```
+
+**Response:**
+
+```
+UpdateCategoryResponse = CategoryResponse;
+```
+
+### ビジネスルール：
+
+- 認証必須
+- 自分が所有するカテゴリーのみ更新可能
+
+## カテゴリー削除
+
+**URL: DELETE /api/categorys/:id**
+
+**Request:**
+
+```
+DeleteCategoryRequest {
+  id: string // カテゴリーID
+}
+```
+
+**Response:**
+
+```
+DeleteCategoryResponse { success: boolean }
+```
+
+### ビジネスルール：
+
+- 認証必須
+- 自分が所有するカテゴリーのみ削除可能
+- 自分が所有するカテゴリーが子タスクで使用されていない場合のみ削除可能
+
 ---
 
 # Accounts（アカウント）API
 
-# OAuth連携時のアカウント作成または取得
+## OAuth連携時のアカウント作成または取得
 
 **URL: POST /api/accounts/auth（内部処理）**
 
 **Request:**
 
-```jsx
+```
 CreateOrGetAccountRequest {
   email: string
-  name: string  
+  name: string
   provider: string    //例："google"
   providerAccountId: string
   thumnail?: string
 }
 ```
 
-Response:
+**Response:**
 
-```jsx
+```
 AccountResponse {
   id: string
   firstName: string
   lastName: string
   fullName: string
-  thumbnail: string?;
+  thumbnail: string?
   lastLoginAt: string // ISO 8601形式
   createdAt: string // ISO 8601形式
-  updateddAt: string // ISO 8601形式
+  updatedAt: string // ISO 8601形式
 }
 ```
 
@@ -312,9 +592,9 @@ AccountResponse {
 
 **Request**: なし
 
-**Response**: 
+**Response**:
 
-```jsx
+```
 GetCurrentAccountResponse = AccountResponse;
 ```
 
@@ -329,16 +609,16 @@ GetCurrentAccountResponse = AccountResponse;
 
 **URL: GET /api/accounts/:id**
 
-**Request**（URL Parameters）：
+**Request**（URL Parameters）:
 
-```jsx
+```
 id: string //アカウントID
 ```
 
 **Response**:
 
-```jsx
-GetCurrentAccountResponse = AccountResponse | null; // 見つからない場合はnull
+```
+GetAccountByIdResponse = AccountResponse | null; // 見つからない場合はnull
 ```
 
 ### ビジネスルール：
@@ -352,7 +632,7 @@ GetCurrentAccountResponse = AccountResponse | null; // 見つからない場合�
 
 ## エンティティの関連
 
-```jsx
+```
 Account（アカウント）—Task（タスク）—TaskItem（子タスク）
 ```
 
@@ -377,7 +657,7 @@ Account（アカウント）—Task（タスク）—TaskItem（子タスク）
 
 ## 認証方式
 
-- Google OAuth. 2.0による認証
+- Google OAuth 2.0による認証
 - すべてのAPIは認証必須
 
 ## **認可（権限チェック）**
@@ -401,11 +681,17 @@ Account（アカウント）—Task（タスク）—TaskItem（子タスク）
 | --- | --- | --- | --- |
 | タスク一覧取得 | 必須 | 不要（ownerIdでフィルタ可） | 自分のタスク |
 | タスク詳細取得 | 必須 | 不要 | 自分のタスク |
+| 月間累計タスクデータ取得 | 必須 | 不要（ownerIdでフィルタ可） | 自分のタスク |
 | タスク作成 | 必須 | 自動設定 | - |
 | タスク更新 | 必須 | 必須 | - |
 | タスク削除 | 必須 | 必須 | - |
-| 子タスク更新 | 必須 | 必須 |  |
-| タスク振り返り更新 | 必須 | 必須 |  |
+| 子タスク更新 | 必須 | 必須 | - |
+| タスク振り返り更新 | 必須 | 必須 | - |
+| 子タスク密度・継続時間・優先度・カテゴリー更新 | 必須 | 必須 | - |
+| カテゴリー一覧取得 | 必須 | - | 自分のカテゴリー |
+| カテゴリー作成 | 必須 | 自動設定 | - |
+| カテゴリー更新 | 必須 | 必須 | - |
+| カテゴリー削除 | 必須 | 必須 | 使用中でないこと |
 
 ---
 
@@ -413,7 +699,7 @@ Account（アカウント）—Task（タスク）—TaskItem（子タスク）
 
 ### 共通型
 
-```jsx
+```
 // 子タスクの優先度
 priority = "High" | "Medium" | "Low";
 
@@ -427,7 +713,7 @@ durationTime = 60 | 45 | 30 | 15;
 status = "Not Started" | "InProgress" | "Completed";
 
 // 日付形式
-ISODateString = string; //ISO 8601形式（例：　"2026-01-15T09:00:00Z"）
+ISODateString = string; //ISO 8601形式（例："2026-01-15T09:00:00Z"）
 ```
 
 ### バリデーションルール（概念）
@@ -444,4 +730,3 @@ ISODateString = string; //ISO 8601形式（例：　"2026-01-15T09:00:00Z"）
 - **order:** 0以上の整数
 - **status:** Not Started か InProgress か Completed
 - **id:** UUID v4形式の文字列
-
