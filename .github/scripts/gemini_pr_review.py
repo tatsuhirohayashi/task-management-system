@@ -10,7 +10,8 @@ import urllib.error
 import urllib.request
 
 CHUNK_SIZE = 3500
-GEMINI_API = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
+# モデル名は環境変数 GEMINI_MODEL で上書き可能（例: gemini-1.5-flash-002）
+DEFAULT_MODEL = "gemini-2.5-flash"
 
 
 def read_diff(path: str) -> str:
@@ -25,7 +26,8 @@ def chunk_text(text: str, size: int) -> list[str]:
     return chunks
 
 
-def call_gemini(api_key: str, prompt: str) -> str:
+def call_gemini(api_key: str, model: str, prompt: str) -> str:
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
     body = {
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": {
@@ -34,7 +36,7 @@ def call_gemini(api_key: str, prompt: str) -> str:
         },
     }
     req = urllib.request.Request(
-        f"{GEMINI_API}?key={api_key}",
+        url,
         data=json.dumps(body).encode("utf-8"),
         headers={"Content-Type": "application/json"},
         method="POST",
@@ -71,6 +73,7 @@ def post_github_comment(token: str, repo: str, pr_number: int, body: str) -> Non
 def main() -> None:
     diff_path = os.environ.get("DIFF_FILE", "pr.diff")
     api_key = os.environ.get("GEMINI_API_KEY")
+    model = os.environ.get("GEMINI_MODEL", DEFAULT_MODEL)
     github_token = os.environ.get("GITHUB_TOKEN")
     repo = os.environ.get("GITHUB_REPOSITORY")
     pr_number = os.environ.get("GITHUB_PR_NUMBER")
@@ -102,7 +105,7 @@ def main() -> None:
     for i, chunk in enumerate(chunks):
         prompt = f"{system_instruction}\n\n## Diff (part {i+1}/{len(chunks)})\n\n```\n{chunk}\n```"
         try:
-            part = call_gemini(api_key, prompt)
+            part = call_gemini(api_key, model, prompt)
             reviews.append(part)
         except Exception as e:
             reviews.append(f"*(このチャンクのレビューでエラー: {e})*")

@@ -5,6 +5,7 @@
 #
 # diff はファイルに書き、Python スクリプトで読み込んで Gemini API を呼びます。
 # これにより、GitHub Actions の出力サイズ制限やコマンドライン長制限によるエラーを避けます。
+# 404 になる場合: env の GEMINI_MODEL を変更するか、.github/scripts/gemini_pr_review.py の DEFAULT_MODEL を利用可能なモデルに合わせてください。
 name: Code Review (Gemini)
 
 on:
@@ -29,6 +30,7 @@ jobs:
       - name: Code Review by Gemini
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: gemini-2.5-flash
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
