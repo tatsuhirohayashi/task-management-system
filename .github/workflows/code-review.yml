@@ -2,6 +2,9 @@
 # 利用する場合: リポジトリの Settings → Secrets and variables → Actions に GEMINI_API_KEY を追加してください。
 # APIキーはこのファイルには書かず、必ず GitHub の Secrets に登録してください。
 # 利用しない場合: この workflow を無効化するか、ファイルを削除してください。
+#
+# diff はファイルに書き、Python スクリプトで読み込んで Gemini API を呼びます。
+# これにより、GitHub Actions の出力サイズ制限やコマンドライン長制限によるエラーを避けます。
 name: Code Review (Gemini)
 
 on:
@@ -19,28 +22,18 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Get PR diff
-        id: get_diff
         run: |
-          git fetch origin "${{ github.event.pull_request.head.ref }}"
           git fetch origin "${{ github.event.pull_request.base.ref }}"
-          git checkout "${{ github.event.pull_request.head.ref }}"
-          git diff "origin/${{ github.event.pull_request.base.ref }}" > diff.txt || true
-          DELIM="DIFF_$(openssl rand -hex 8)_END"
-          echo "diff<<$DELIM" >> $GITHUB_OUTPUT
-          cat diff.txt >> $GITHUB_OUTPUT
-          echo "$DELIM" >> $GITHUB_OUTPUT
+          git diff "origin/${{ github.event.pull_request.base.ref }}" -- . > pr.diff || true
 
-      - name: Code Review by Gemini AI
-        uses: rubensflinco/gemini-code-review-action@1.0.5
-        with:
-          gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          github_repository: ${{ github.repository }}
-          github_pull_request_number: ${{ github.event.pull_request.number }}
-          git_commit_hash: ${{ github.event.pull_request.head.sha }}
-          model: "gemini-1.5-pro-latest"
-          pull_request_diff: ${{ steps.get_diff.outputs.diff }}
-          pull_request_chunk_size: "3500"
-          extra_prompt: |
+      - name: Code Review by Gemini
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
+          DIFF_FILE: pr.diff
+          EXTRA_PROMPT: |
             このリポジトリはタスク管理アプリです。backend は Go (Echo)、frontend は Next.js/TypeScript です。
-            .gemini/styleguide.md の指針も参照してレビューしてください。日本語でフィードバックを書いてください。
+            .gemini/styleguide.md の指針も参照してレビューしてください。
+        run: python3 .github/scripts/gemini_pr_review.py
