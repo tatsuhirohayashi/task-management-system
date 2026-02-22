@@ -14,6 +14,10 @@ const SIDEBAR_MENU_ITEMS: SidebarMenuItem[] = [
     label: "今日のタスク",
     path: "/tasks/today",
   },
+  {
+    label: "カテゴリー",
+    path: "/category-settings",
+  },
 ];
 
 interface SidebarPresenterProps {
