@@ -3,9 +3,6 @@
 import { Button } from "@/shared/components/ui/button";
 import type { MockCategory } from "@/features/category/mock";
 
-const inputClassName =
-  "px-3 py-2 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-gray-400 w-full max-w-xs";
-
 interface CategorySettingsPresenterProps {
   categories: MockCategory[];
   inputValue: string;
@@ -50,7 +47,7 @@ export function CategorySettingsPresenter({
             value={inputValue}
             onChange={(e) => onInputChange(e.target.value)}
             placeholder="インプット系"
-            className={inputClassName}
+            className="px-3 py-2 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-gray-400 w-full max-w-xs"
           />
           <Button
             type="button"
@@ -84,7 +81,7 @@ export function CategorySettingsPresenter({
                       type="text"
                       value={editingName}
                       onChange={(e) => onEditChange(e.target.value)}
-                      className={`${inputClassName} flex-1 max-w-xs`}
+                      className="px-3 py-2 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-gray-400 flex-1 max-w-xs"
                     />
                     <div className="flex gap-2">
                       <Button
