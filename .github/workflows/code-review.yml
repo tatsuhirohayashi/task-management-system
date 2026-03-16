@@ -1,0 +1,41 @@
+# PR 時に Gemini でコードレビューコメントを投稿する（オプション）
+# 利用する場合: リポジトリの Settings → Secrets and variables → Actions に GEMINI_API_KEY を追加してください。
+# APIキーはこのファイルには書かず、必ず GitHub の Secrets に登録してください。
+# 利用しない場合: この workflow を無効化するか、ファイルを削除してください。
+#
+# diff はファイルに書き、Python スクリプトで読み込んで Gemini API を呼びます。
+# これにより、GitHub Actions の出力サイズ制限やコマンドライン長制限によるエラーを避けます。
+# 404 になる場合: env の GEMINI_MODEL を変更するか、.github/scripts/gemini_pr_review.py の DEFAULT_MODEL を利用可能なモデルに合わせてください。
+name: Code Review (Gemini)
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get PR diff
+        run: |
+          git fetch origin "${{ github.event.pull_request.base.ref }}"
+          git diff "origin/${{ github.event.pull_request.base.ref }}" -- . > pr.diff || true
+
+      - name: Code Review by Gemini
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: gemini-2.5-flash
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
+          DIFF_FILE: pr.diff
+          EXTRA_PROMPT: |
+            このリポジトリはタスク管理アプリです。backend は Go (Echo)、frontend は Next.js/TypeScript です。
+            .gemini/styleguide.md の指針も参照してレビューしてください。
+        run: python3 .github/scripts/gemini_pr_review.py

@@ -9,15 +9,17 @@ import (
 
 // Server ServerInterfaceの実装
 type Server struct {
-	taskController    *controller.TaskController
-	accountController *controller.AccountController
+	taskController     *controller.TaskController
+	accountController  *controller.AccountController
+	categoryController *controller.CategoryController
 }
 
 // NewServer サーバーを作成
-func NewServer(taskController *controller.TaskController, accountController *controller.AccountController) *Server {
+func NewServer(taskController *controller.TaskController, accountController *controller.AccountController, categoryController *controller.CategoryController) *Server {
 	return &Server{
-		taskController:    taskController,
-		accountController: accountController,
+		taskController:     taskController,
+		accountController:  accountController,
+		categoryController: categoryController,
 	}
 }
 
@@ -95,4 +97,24 @@ func (s *Server) TasksUpdateTask(ctx echo.Context, taskId string) error {
 // TasksUpdateTaskReview タスクの振り返りを更新
 func (s *Server) TasksUpdateTaskReview(ctx echo.Context, taskId string) error {
 	return s.taskController.UpdateTaskReview(ctx, taskId)
+}
+
+// CategorysListCategorys カテゴリー一覧を取得
+func (s *Server) CategorysListCategorys(ctx echo.Context) error {
+	return s.categoryController.ListCategories(ctx)
+}
+
+// CategorysCreateCategory カテゴリーを作成
+func (s *Server) CategorysCreateCategory(ctx echo.Context) error {
+	return s.categoryController.CreateCategory(ctx)
+}
+
+// CategorysUpdateCategory カテゴリーを更新
+func (s *Server) CategorysUpdateCategory(ctx echo.Context, categoryId string) error {
+	return s.categoryController.UpdateCategory(ctx, categoryId)
+}
+
+// CategorysDeleteCategory カテゴリーを削除
+func (s *Server) CategorysDeleteCategory(ctx echo.Context, categoryId string) error {
+	return s.categoryController.DeleteCategory(ctx, categoryId)
 }

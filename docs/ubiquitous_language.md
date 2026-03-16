@@ -1,4 +1,4 @@
-# ユビキタス言語（タスク管理アプリ）
+# ユビキタス言語（タスク管理アプリセカンドリリース２月１６日）
 
 ## アカウント関連
 
@@ -31,6 +31,32 @@
 | MyTaskPage（マイタスクページ） | 自分が作成したタスクの一覧を見られる画面 |
 | TaskDetail（タスクの詳細） | タスク1日分を表示する画面。 |
 | TaskSearch（タスク検索） | タスクのタイトルまたは子タスクの内容を検索できる |
+| ↓以下追加 |  |
+| Total Monthly Work Hours（月間累計作業時間） |  |
+| Planned Monthly Work Hours（月間予定作業時間） |  |
+| Total Monthly Tasks（月間累計タスク数） |  |
+| Planned Monthly Tasks（月間予定タスク数） |  |
+| Monthly Completion Rate（月間完了率） |  |
+| Total Monthly High-Load Task Hours（月間累計高負荷タスク時間） |  |
+| Total Monthly Medium-Load Task Hours（月間累計中負荷タスク時間） |  |
+| Total Monthly Low-Load Task Hours（月間累計低負荷タスク時間） |  |
+| Monthly Ratio of High-Load Tasks（月間累計高負荷タスクの割合） |  |
+| Monthly Ratio of Medium-Load Tasks（月間累計中負荷タスクの割合） |  |
+| Monthly Ratio of Low-Load Tasks（月間累計低負荷タスクの割合） |  |
+| Total Monthly Task Hours by Category（月間累計カテゴリーのタスク時間） | 月間の１つのカテゴリーのタスクの累計の時間 |
+| Monthly Task Ratio by Category（月間累計カテゴリーのタスクの割合） | 月間の全カテゴリーの内、１つのカテゴリーのタスクの累計の割合 |
+| Total Daily Work Hours（日別累計作業時間） | 1日の累計の作業時間 |
+| Total Daily High-Load Task Hours（日別累計高負荷タスク時間） | 1日の累計の高負荷のタスク時間 |
+| Total Daily Medium-Load Task Hours（日別累計中負荷タスク時間） | 1日の累計の中負荷のタスク時間 |
+| Total Daily Low-Load Task Hours（日別累計低負荷タスク時間） | 1日の累計の低負荷のタスク時間 |
+
+## カテゴリー（Category）関連
+
+| 用語 | 定義 |
+| --- | --- |
+| Category（カテゴリ） | タスクのカテゴリー |
+| CategoryId（カテゴリーID） | カテゴリーを一意に識別するためのID |
+| Name（名前） | カテゴリーの名前 |
 
 ## 操作・機能関連
 
@@ -53,4 +79,3 @@
 | GitHub Actions | CI/CD用のワークフロー |
 | Cloud Logging | ログ管理ツール（監視の最低限機能） |
 | OAuth2（オーオース２） | Googleログインで使う認証の仕組み |
-
