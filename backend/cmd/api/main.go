@@ -57,17 +57,20 @@ func main() {
 	// リポジトリを作成
 	taskRepo := db.NewTaskRepository(pool)
 	accountRepo := db.NewAccountRepository(pool)
+	categoryRepo := db.NewCategoryRepository(pool)
 
 	// ユースケースを作成
 	taskUsecase := usecase.NewTaskUsecase(taskRepo, accountRepo)
 	accountUsecase := usecase.NewAccountUsecase(accountRepo)
+	categoryUsecase := usecase.NewCategoryUsecase(categoryRepo)
 
 	// コントローラーを作成
 	taskController := controller.NewTaskController(taskUsecase)
 	accountController := controller.NewAccountController(accountUsecase)
+	categoryController := controller.NewCategoryController(categoryUsecase)
 
 	// ハンドラーを作成
-	server := handler.NewServer(taskController, accountController)
+	server := handler.NewServer(taskController, accountController, categoryController)
 
 	// Echoインスタンスを作成
 	e := echo.New()

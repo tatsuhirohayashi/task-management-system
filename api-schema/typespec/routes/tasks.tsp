@@ -58,7 +58,8 @@ interface Tasks {
   @summary("Delete task")
   @doc("タスクを削除します。自分が所有するタスクのみ削除可能です。")
   deleteTask(
-    @path taskId: string
+    @path taskId: string,
+    @body request: DeleteTaskRequest
   ): DeleteTaskResponse | NotFoundError | UnauthorizedError | ForbiddenError;
 
   /** タスク振り返り更新 */

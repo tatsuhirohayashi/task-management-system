@@ -140,6 +140,7 @@ model CreateTaskItemRequest {
  * タスク作成リクエスト
  */
 model CreateTaskRequest {
+  ownerId: string;
   title: string;
   date: string; // ISO 8601形式
   taskItems: CreateTaskItemRequest[];
@@ -168,6 +169,7 @@ model UpdateTaskItemRequest {
  * タスク更新リクエスト
  */
 model UpdateTaskRequest {
+  ownerId: string;
   title: string;
   date: string; // ISO 8601形式
   taskItems: UpdateTaskItemRequest[];
@@ -177,6 +179,13 @@ model UpdateTaskRequest {
  * タスク更新レスポンス
  */
 alias UpdateTaskResponse = TaskResponse;
+
+/**
+ * タスク削除リクエスト
+ */
+model DeleteTaskRequest {
+  ownerId: string;
+}
 
 /**
  * タスク削除レスポンス
@@ -189,6 +198,7 @@ model DeleteTaskResponse {
  * 子タスクアウトプット更新リクエスト
  */
 model UpdateTaskItemOutputRequest {
+  ownerId: string;
   output: string;
 }
 
@@ -201,6 +211,7 @@ alias UpdateTaskItemOutputResponse = TaskResponse;
  * タスク振り返り更新リクエスト
  */
 model UpdateTaskReviewRequest {
+  ownerId: string;
   review?: string;
 }
 
