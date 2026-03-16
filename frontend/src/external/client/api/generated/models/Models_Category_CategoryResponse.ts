@@ -3,18 +3,13 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { Models_Task_TaskItem } from './Models_Task_TaskItem';
-
 /**
- * タスク
+ * カテゴリーレスポンス
  */
-export type Models_Task_Task = {
+export type Models_Category_CategoryResponse = {
     id: string;
     ownerId: string;
-    title: string;
-    date: string;
-    review?: string;
-    taskItems: Array<Models_Task_TaskItem>;
+    name: string;
     createdAt: string;
     updatedAt: string;
 };

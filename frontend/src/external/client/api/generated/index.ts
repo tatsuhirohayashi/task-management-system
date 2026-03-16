@@ -1,7 +1,7 @@
 /* generated using openapi-typescript-codegen -- do no edit */
 /* istanbul ignore file */
 /* tslint:disable */
- 
+/* eslint-disable */
 export { ApiError } from './core/ApiError';
 export { CancelablePromise, CancelError } from './core/CancelablePromise';
 export { OpenAPI } from './core/OpenAPI';
@@ -10,6 +10,10 @@ export type { OpenAPIConfig } from './core/OpenAPI';
 export type { Models_Account_Account } from './models/Models_Account_Account';
 export type { Models_Account_AccountResponse } from './models/Models_Account_AccountResponse';
 export type { Models_Account_CreateOrGetAccountRequest } from './models/Models_Account_CreateOrGetAccountRequest';
+export type { Models_Category_CategoryResponse } from './models/Models_Category_CategoryResponse';
+export type { Models_Category_CreateCategoryRequest } from './models/Models_Category_CreateCategoryRequest';
+export type { Models_Category_DeleteCategoryResponse } from './models/Models_Category_DeleteCategoryResponse';
+export type { Models_Category_UpdateCategoryRequest } from './models/Models_Category_UpdateCategoryRequest';
 export { Models_Common_BadRequestError } from './models/Models_Common_BadRequestError';
 export type { Models_Common_ErrorResponse } from './models/Models_Common_ErrorResponse';
 export { Models_Common_ForbiddenError } from './models/Models_Common_ForbiddenError';
@@ -35,5 +39,6 @@ export type { Models_Task_UpdateTaskRequest } from './models/Models_Task_UpdateT
 export type { Models_Task_UpdateTaskReviewRequest } from './models/Models_Task_UpdateTaskReviewRequest';
 
 export { AccountsService } from './services/AccountsService';
+export { CategorysService } from './services/CategorysService';
 export { TaskItemsService } from './services/TaskItemsService';
 export { TasksService } from './services/TasksService';

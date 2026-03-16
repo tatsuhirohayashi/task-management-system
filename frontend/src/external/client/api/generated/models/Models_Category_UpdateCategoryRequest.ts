@@ -4,9 +4,9 @@
 /* eslint-disable */
 
 /**
- * タスク削除レスポンス
+ * カテゴリー更新リクエスト
  */
-export type Models_Task_DeleteTaskResponse = {
-    success: boolean;
+export type Models_Category_UpdateCategoryRequest = {
+    name: string;
 };
 

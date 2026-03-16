@@ -1,7 +1,7 @@
 /* generated using openapi-typescript-codegen -- do no edit */
 /* istanbul ignore file */
 /* tslint:disable */
- 
+/* eslint-disable */
 import type { Models_Task_CreateTaskRequest } from '../models/Models_Task_CreateTaskRequest';
 import type { Models_Task_DeleteTaskRequest } from '../models/Models_Task_DeleteTaskRequest';
 import type { Models_Task_DeleteTaskResponse } from '../models/Models_Task_DeleteTaskResponse';
