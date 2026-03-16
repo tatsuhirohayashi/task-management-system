@@ -1,7 +1,7 @@
 /* generated using openapi-typescript-codegen -- do no edit */
 /* istanbul ignore file */
 /* tslint:disable */
- 
+/* eslint-disable */
 import type { Models_Account_AccountResponse } from '../models/Models_Account_AccountResponse';
 import type { Models_Account_CreateOrGetAccountRequest } from '../models/Models_Account_CreateOrGetAccountRequest';
 

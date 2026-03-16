@@ -1,16 +1,16 @@
 "use client";
 
 import { Button } from "@/shared/components/ui/button";
-import type { MockCategory } from "@/features/category/mock";
+import type { CategoryResponse } from "@/external/dto/category.dto";
 
 interface CategorySettingsPresenterProps {
-  categories: MockCategory[];
+  categories: CategoryResponse[];
   inputValue: string;
   editingId: string | null;
   editingName: string;
   onInputChange: (value: string) => void;
   onAdd: () => void;
-  onEditStart: (category: MockCategory) => void;
+  onEditStart: (category: CategoryResponse) => void;
   onEditChange: (value: string) => void;
   onEditSave: () => void;
   onEditCancel: () => void;
